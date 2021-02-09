@@ -28,11 +28,9 @@ class ChatService {
     }
 
     fun getMessages(chatId: Long, offset: Int, startFrom: Int): List<Message> =
-        chats.filter { it.id == chatId }
-            .ifEmpty { throw ChatNotFoundError() }
-            .map(Chat::messages)
+        chats.singleOrNull { it.id == chatId }
+            .let { it?.messages ?: throw ChatNotFoundError() }
             .drop(startFrom)
             .take(offset)
             .ifEmpty { throw MessagesNotFoundError() }
-            .single()
 }
