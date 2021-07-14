@@ -30,7 +30,9 @@ class ChatService {
     fun getMessages(chatId: Long, offset: Int, startFrom: Int): List<Message> =
         chats.singleOrNull { it.id == chatId }
             .let { it?.messages ?: throw ChatNotFoundError() }
+            .asSequence()
             .drop(startFrom)
             .take(offset)
             .ifEmpty { throw MessagesNotFoundError() }
+            .toList()
 }
